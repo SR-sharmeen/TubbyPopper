@@ -478,16 +478,29 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
 
     private void loadGameInfoText() {
         String s = "this is where the score will be";
-        scoreTextDisplay = new Text(0, 0, this.font, s, new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
-        livesTextDisplay = new Text(0, 30, this.font, s, new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
-        elapsedTimeDisplay = new Text(CAMERA_WIDTH - 150, 0, this.font, s, new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
-        scoreTextDisplay.setColor(Color.RED);
-        scoreTextDisplay.setZIndex(1000);
-        livesTextDisplay.setZIndex(1000);
+        loadScoreText(s);
+        loadLivesText(s);
+        elapsedTimeDisplay = new Text(CAMERA_WIDTH - 150, 0, this.font, s, new TextOptions(HorizontalAlign.CENTER), getVertexBufferObjectManager());
+        attachTextToScene();
+
+    }
+
+    private void attachTextToScene() {
         this.mMainScene.attachChild(scoreTextDisplay);
         this.mMainScene.attachChild(livesTextDisplay);
         this.mMainScene.attachChild(elapsedTimeDisplay);
+    }
+
+    private void loadLivesText(String s) {
+        livesTextDisplay = new Text(0, 30, this.font, s, new TextOptions(HorizontalAlign.CENTER), getVertexBufferObjectManager());
         livesTextDisplay.setText("Lives:" + life);
+        livesTextDisplay.setZIndex(1000);
+    }
+
+    private void loadScoreText(String s) {
+        scoreTextDisplay = new Text(0, 0, this.font, s, new TextOptions(HorizontalAlign.CENTER), getVertexBufferObjectManager());
+        scoreTextDisplay.setColor(Color.RED);
+        scoreTextDisplay.setZIndex(1000);
         scoreText = "Score:";
         scoreTextDisplay.setText(scoreText + Score);
     }
