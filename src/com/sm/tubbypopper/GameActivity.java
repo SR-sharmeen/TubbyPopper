@@ -277,23 +277,23 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         createTextureAtlas();
 
         bombTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (bombTextureAtlas, this, "bomb.png", startX, startY);
+                (bombTextureAtlas, this, getString(R.string.bomb_asset), startX, startY);
         mangoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (mangoTextureAtlas, this, "mmango.png", startX, startY);
+                (mangoTextureAtlas, this, getString(R.string.mango_asset), startX, startY);
         appleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (appleTextureAtlas, this, "apple.png", startX, startY);
+                (appleTextureAtlas, this, getString(R.string.apple_asset), startX, startY);
         skyTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (skyTextureAtlas, this, "sky.png", startX, startY);
+                (skyTextureAtlas, this, getString(R.string.sky_asset), startX, startY);
         thornsTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (thornsTextureAtlas, this, "thorns.png", startX, startY);
+                (thornsTextureAtlas, this, getString(R.string.thorns_asset), startX, startY);
         plusTenTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (plusTenTextureAtlas, this, "plus10.png", startX, startY);
+                (plusTenTextureAtlas, this, getString(R.string.plus10_asset), startX, startY);
         playTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (playTextureAtlas, this, "play.png", startX, startY);
+                (playTextureAtlas, this, getString(R.string.play_asset), startX, startY);
         pauseTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (pauseTextureAtlas, this, "pause.png", startX, startY);
+                (pauseTextureAtlas, this, getString(R.string.pause_asset), startX, startY);
         explosionTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (explosionTextureAtlas, this, "explosion.png", startX, startY);
+                (explosionTextureAtlas, this, getString(R.string.explosion_asset), startX, startY);
 
 
     }
