@@ -49,6 +49,9 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
 
     static final int CAMERA_WIDTH = 800;
     static final int CAMERA_HEIGHT = 480;
+    public static final int BOMB = 0;
+    public static final int APPLE = 1;
+    public static final int MANGO = 2;
     private  VertexBufferObjectManager vertexBufferObjectManager;
     private Camera mCamera;
     private Scene mMainScene;
@@ -509,6 +512,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     }
 
     private void generatePoppables() {
+        Sprite sprite=null;
         Random chooseBall = new Random();
         Random chooseLocation = new Random();
         Random indexChanger = new Random();
@@ -533,9 +537,9 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         }
 
         switch (poppableChoice) {
-            case 0:
+            case BOMB:
 
-                Sprite s = new Sprite(posX, posY, bombTextureRegion, vertexBufferObjectManager) {
+                sprite = new Sprite(posX, posY, bombTextureRegion, vertexBufferObjectManager) {
 
                     @Override
                     public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -552,24 +556,23 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
 
                     }
                 };
-
-                thePoppables.add(s);
-                registerSpriteAndAddMoveModifier(s, poppableChoice, s.getX(), s.getY());
                 bombCount++;
                 break;
-            case 1:
-                initFruitSprite(poppableChoice, posX, posY, appleTextureRegion);
+            case APPLE:
+               sprite= initFruitSprite(posX, posY, appleTextureRegion);
                 appleCount++;
                 break;
-            case 2:
-                initFruitSprite(poppableChoice,posX,posY,mangoTextureRegion);
+            case MANGO:
+               sprite= initFruitSprite(posX,posY,mangoTextureRegion);
                 mangoCount++;
                 break;
         }
+        thePoppables.add(sprite);
+        registerSpriteAndAddMoveModifier(sprite, poppableChoice, sprite.getX(), sprite.getY());
       }
 
-    private void initFruitSprite(int ballChoice, final int posX, final int posY, final TextureRegion appleTextureRegion1) {
-        Sprite s2 = new Sprite(posX, posY, appleTextureRegion1, vertexBufferObjectManager) {
+    private Sprite initFruitSprite(final int posX, final int posY, final TextureRegion appleTextureRegion1) {
+        return new Sprite(posX, posY, appleTextureRegion1, vertexBufferObjectManager) {
 
 
             @Override
@@ -584,11 +587,9 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
                 }
                 return true;
             }
-
-
         };
-        thePoppables.add(s2);
-        registerSpriteAndAddMoveModifier(s2, ballChoice, s2.getX(), s2.getY());
+
+
     }
 
     private void registerSpriteAndAddMoveModifier(Sprite sprite, int ballChoice, final float startX, final float startY) {
@@ -620,7 +621,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
                 if (thornsOnBackgroundSprite.collidesWith(thePoppables.get(i))) {
 
 
-                    if (thePoppables.get(i).getTag() != 0) {
+                    if (thePoppables.get(i).getTag() != BOMB) {
                         dyingBeep.play();
 
                         life--;
