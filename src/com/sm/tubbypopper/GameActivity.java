@@ -103,101 +103,17 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     private Sprite backgroundSprite;
     private Font font;
 
-    @Override
-    public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY) {
-        switch (pMenuItem.getID()) {
-            case 0:
-                if (isPaused == false) {
-                    pauseGame(pMenuScene);
-                } else {
-                    resumeGame(pMenuScene);
-                }
-                return true;
-
-            default:
-                return false;
-        }
-    }
-
-    private void resumeGame(MenuScene pMenuScene) {
-        isPaused = false;
-        toggleMusic(1);
-        playPauseButtonSet(pMenuScene, pauseTextureRegion);
-        ignoreSceneUpdates(false);
-    }
-
-    private void pauseGame(MenuScene pMenuScene) {
-        isPaused = true;
-        toggleMusic(0);
-        playPauseButtonSet(pMenuScene, playTextureRegion);
-        ignoreSceneUpdates(true);
-    }
-
-    private void toggleMusic(int state) {
-        if (bgMusic != null) {
-            switch (state) {
-                case 1:
-                    bgMusic.resume();
-                    break;
-                case 2:
-                    bgMusic.pause();
-                    break;
-            }
-
-        }
-    }
-
-    private void ignoreSceneUpdates(boolean isIgnored) {
-        mMainScene.setIgnoreUpdate(isIgnored);
-    }
-
-    private void playPauseButtonSet(MenuScene pMenuScene, TextureRegion textureRegion) {
-        IMenuItem pMenuItem;
-        pMenuScene.reset();
-        pMenuScene.clearMenuItems();
-        pMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(0, textureRegion, vertexBufferObjectManager), 2, 1);
-        pMenuScene.addMenuItem(pMenuItem);
-        pMenuScene.buildAnimations();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    protected void onPause() {
-        toggleMusic(0);
-        super.onPause();
-    }
-
-    ;
-
-    @Override
-    public void onPauseGame() {
-        toggleMusic(0);
-        super.onPauseGame();
-    }
-
-    ;
 
     @Override
     protected synchronized void onResume() {
         toggleMusic(1);
         super.onResume();
     }
-
-    ;
-
     @Override
-    public
-    synchronized void onResumeGame() {
+    public synchronized void onResumeGame() {
         toggleMusic(1);
         super.onResumeGame();
     }
-
-    ;
 
     @Override
     public EngineOptions onCreateEngineOptions() {
@@ -214,14 +130,117 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     @Override
     protected void onCreateResources() {
         Log.e("Creating:", "Resources");
-
-        Log.e("Creating:", "Sounds");
         vertexBufferObjectManager=getVertexBufferObjectManager();
         loadGameSounds();
         loadGameMusic();
         createTextureRegions();
         loadTextureRegions();
 
+    }
+
+    @Override
+    protected Scene onCreateScene() {
+        initSceneSprites();
+        mMainScene = new Scene();
+        initScene();
+        initTimers();
+        addMenuToScene();
+        registerTimers(getEngine());
+        return mMainScene;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    private MenuScene createMenu() {
+        menuScene = new MenuScene(mCamera);
+        menuScene.setX(-375);
+        menuScene.setY(-120);
+        addPauseOptionToMenu();
+        menuScene.setBackgroundEnabled(false);
+        menuScene.setOnMenuItemClickListener(this);
+        return menuScene;
+    }
+
+    private void addPauseOptionToMenu() {
+        final IMenuItem pauseMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(0, pauseTextureRegion, vertexBufferObjectManager), 2, 1);
+        menuScene.addMenuItem(pauseMenuItem);
+        menuScene.buildAnimations();
+    }
+    private void addMenuToScene() {
+        menuScene = createMenu();
+        mMainScene.setChildScene(menuScene);
+    }
+
+    @Override
+    public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY) {
+        switch (pMenuItem.getID()) {
+            case 0:
+                if (isPaused == false) {
+                    pauseGame(pMenuScene);
+                } else {
+                    resumeGame(pMenuScene);
+                }
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+
+    private void resumeGame(MenuScene pMenuScene) {
+        isPaused = false;
+        toggleMusic(1);
+        playPauseButtonSet(pMenuScene, pauseTextureRegion);
+        ignoreSceneUpdates(false);
+    }
+
+    @Override
+    protected void onPause() {
+        toggleMusic(0);
+        super.onPause();
+    }
+
+    @Override
+    public void onPauseGame() {
+        toggleMusic(0);
+        super.onPauseGame();
+    }
+    private void pauseGame(MenuScene pMenuScene) {
+        isPaused = true;
+        toggleMusic(0);
+        playPauseButtonSet(pMenuScene, playTextureRegion);
+        ignoreSceneUpdates(true);
+    }
+
+
+
+    private void ignoreSceneUpdates(boolean isIgnored) {
+        mMainScene.setIgnoreUpdate(isIgnored);
+    }
+
+    private void playPauseButtonSet(MenuScene pMenuScene, TextureRegion textureRegion) {
+        IMenuItem pMenuItem;
+        pMenuScene.reset();
+        pMenuScene.clearMenuItems();
+        pMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(0, textureRegion, vertexBufferObjectManager), 2, 1);
+        pMenuScene.addMenuItem(pMenuItem);
+        pMenuScene.buildAnimations();
+    }
+    private void toggleMusic(int state) {
+        if (bgMusic != null) {
+            switch (state) {
+                case 1:
+                    bgMusic.resume();
+                    break;
+                case 2:
+                    bgMusic.pause();
+                    break;
+            }
+        }
     }
 
     private void loadGameSounds() {
@@ -240,6 +259,15 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private void loadGameMusic() {
+        try {
+            bgMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "music.mp3");
+        } catch (IOException e) {
+            Log.e("loadGameMusic:", "Could not load game music");
+        }
+        bgMusic.setLooping(true);
+        bgMusic.setVolume(0.1f);
     }
 
     private void createTextureRegions() {
@@ -296,48 +324,6 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         explosionTextureAtlas.load();
     }
 
-    private void loadGameMusic() {
-        try {
-            bgMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "music.mp3");
-        } catch (IOException e) {
-            Log.e("loadGameMusic:", "Could not load game music");
-        }
-        bgMusic.setLooping(true);
-        bgMusic.setVolume(0.1f);
-    }
-
-    private MenuScene createMenu() {
-        menuScene = new MenuScene(mCamera);
-        menuScene.setX(-375);
-        menuScene.setY(-120);
-        addPauseOptionToMenu();
-        menuScene.setBackgroundEnabled(false);
-        menuScene.setOnMenuItemClickListener(this);
-        return menuScene;
-    }
-
-    private void addPauseOptionToMenu() {
-        final IMenuItem pauseMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(0, pauseTextureRegion, vertexBufferObjectManager), 2, 1);
-        menuScene.addMenuItem(pauseMenuItem);
-        menuScene.buildAnimations();
-    }
-
-    @Override
-    protected Scene onCreateScene() {
-        initSceneSprites();
-        mMainScene = new Scene();
-        initScene();
-        initTimers();
-        addMenuToScene();
-        registerTimers(getEngine());
-        return mMainScene;
-    }
-
-    private void addMenuToScene() {
-        menuScene = createMenu();
-        mMainScene.setChildScene(menuScene);
-    }
-
     private void registerTimers(Engine engine) {
         engine.registerUpdateHandler(generateBallTimer);
         engine.registerUpdateHandler(levelUpTimer);
@@ -371,9 +357,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
                 }
             }
 
-        }
-
-        ;
+        };
     }
 
     private void initRemovePlus10NotificationTimer() {
@@ -392,9 +376,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
                 }
             }
 
-        }
-
-        ;
+        };
     }
 
     private void initElapsedTimeTimer() {
@@ -415,9 +397,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
                 }
             }
 
-        }
-
-        ;
+        };
     }
 
     private void initPoppableGenerator() {
@@ -438,9 +418,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
                 }
             }
 
-        }
-
-        ;
+        };
     }
 
     private void initEndGameTimer() {
@@ -588,9 +566,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
                 mangoCount++;
                 break;
         }
-
-
-    }
+      }
 
     private void initFruitSprite(int ballChoice, final int posX, final int posY, final TextureRegion appleTextureRegion1) {
         Sprite s2 = new Sprite(posX, posY, appleTextureRegion1, vertexBufferObjectManager) {
@@ -623,7 +599,6 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
 
         MoveModifier drop = getMoveModifier(startX, startY);
         sprite.registerEntityModifier(drop);
-
     }
 
     private MoveModifier getMoveModifier(final float startX, final float startY) {
@@ -641,7 +616,6 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         @Override
         public void onUpdate(float pSecondsElapsed) {
 
-            //	elapsedTimeDisplay.setText("Time:"+Float.toString(pSecondsElapsed));
             for (int i = 0; i < thePoppables.size(); i++) {
                 if (thornsOnBackgroundSprite.collidesWith(thePoppables.get(i))) {
 
@@ -662,13 +636,10 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
                     thePoppables.remove(i);
                 }
             }
-
         }
 
         @Override
         public void reset() {
-            // TODO Auto-generated method stub
-
         }
     };
 
