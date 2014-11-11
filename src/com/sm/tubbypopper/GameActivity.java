@@ -211,49 +211,8 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
         Log.e("Creating:", "Sounds");
         loadGameSounds();
         loadGameMusic();
-        Log.e("Creating", "Texture Regions");
-        mBlackTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mBlueTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mRedTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mBackgroundTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 4096, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mThornsTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mShowPlusTenTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mPlayTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mPauseTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mExplosionTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-
-        BlackBall= BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (this.mBlackTextureAtlas, this, "bomb.png", startX, startY);
-        BlueBall= BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (this.mBlueTextureAtlas, this, "mmango.png", startX, startY);
-        RedBall= BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (this.mRedTextureAtlas, this, "apple.png", startX, startY);
-        BackGround=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (this.mBackgroundTextureAtlas, this, "sky.png", startX, startY);
-        Thorns=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (this.mThornsTextureAtlas, this, "thorns.png", startX, startY);
-        PlusTen=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (this.mShowPlusTenTextureAtlas, this, "plus10.png", startX, startY);
-        Play=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (this.mPlayTextureAtlas, this, "play.png", startX, startY);
-        Pause=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (this.mPauseTextureAtlas, this, "pause.png", startX, startY);
-        Explode=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (this.mExplosionTextureAtlas, this, "explosion.png", startX, startY);
-
-        this.mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
-
-        this.mFont.load();
-
-        mBlueTextureAtlas.load();
-        mBlackTextureAtlas.load();
-        mRedTextureAtlas.load();
-        mBackgroundTextureAtlas.load();
-        mThornsTextureAtlas.load();
-        mShowPlusTenTextureAtlas.load();
-        mPlayTextureAtlas.load();
-        mPauseTextureAtlas.load();
-        mExplosionTextureAtlas.load();
+        createTextureRegions();
+        loadTextureRegions();
 		
 	}
 
@@ -295,7 +254,7 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
         BackGround=BitmapTextureAtlasTextureRegionFactory.createFromAsset
                  (this.mBackgroundTextureAtlas, this, "sky.png", startX, startY);
         Thorns=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                 (this.mThornsTextureAtlas, this, "thornsOnBackgroundSprite.png", startX, startY);
+                 (this.mThornsTextureAtlas, this, "thorns.png", startX, startY);
         PlusTen=BitmapTextureAtlasTextureRegionFactory.createFromAsset
                  (this.mShowPlusTenTextureAtlas, this, "plus10.png", startX, startY);
         Play=BitmapTextureAtlasTextureRegionFactory.createFromAsset
@@ -307,6 +266,10 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
 
         this.mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
 
+
+    }
+
+    private void loadTextureRegions() {
         this.mFont.load();
 
         mBlueTextureAtlas.load();
@@ -349,188 +312,15 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
 
     @Override
 	protected Scene onCreateScene() {
-        Sprite bg= new Sprite(0,0, BackGround, getVertexBufferObjectManager());
-
-        final Sprite thorns= new Sprite(0,CAMERA_HEIGHT-118, Thorns, getVertexBufferObjectManager());
-
-        bg.setCullingEnabled(true);
-        theBalls=new ArrayList<Sprite>();
-        this.mMainScene=new Scene();
-        //	this.mMainScene.setBackground(new Background(255, 255, 255));
-        this.mMainScene.setBackground(new SpriteBackground(bg));
-        this.mMainScene.attachChild(thorns);
-
-        //bgMusic.setVolume(5);
-        bgMusic.play();
-        String s="this is where the score will be";
-        scoreTextDisplay = new Text(0, 0, this.mFont, s, new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
-        livesTextDisplay = new Text(0, 30, this.mFont, s, new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
-        elapsedTimeDisplay = new Text(CAMERA_WIDTH-150, 0, this.mFont, s, new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
-        scoreTextDisplay.setColor(Color.RED);
-        scoreTextDisplay.setZIndex(1000);
-        livesTextDisplay.setZIndex(1000);
-        this.mMainScene.attachChild(scoreTextDisplay);
-        this.mMainScene.attachChild(livesTextDisplay);
-        this.mMainScene.attachChild(elapsedTimeDisplay);
-        livesTextDisplay.setText("Lives:"+life);
-        scoreText="Score:";
-        scoreTextDisplay.setText(scoreText+Score);
-        IUpdateHandler detect = new IUpdateHandler()
-        {
-            @Override
-            public void onUpdate(float pSecondsElapsed) {
-
-                //	elapsedTimeDisplay.setText("Time:"+Float.toString(pSecondsElapsed));
-                for(int i=0; i<theBalls.size();i++)
-                {
-                    if(thorns.collidesWith(theBalls.get(i)) )
-                    {
-
-
-                        if(theBalls.get(i).getTag()!=0)
-                        {
-                            dyingBeep.play();
-
-                            life--;
-                            livesTextDisplay.setText("Lives:"+life);
-                            if(life==0)
-                            {
-                                endTheGame();
-                            }
-
-
-                            Log.e("Update", "A good ball died");
-                        }
-                        mMainScene.detachChild(theBalls.get(i));
-                        theBalls.remove(i);
-                    }
-                }
-
-            }
-
-            @Override
-            public void reset() {
-                // TODO Auto-generated method stub
-
-            }
-        };
-        this.mMainScene.registerUpdateHandler(detect);
-        endGameTimer = new TimerHandler((float) 180, true, new ITimerCallback() {
-            @Override
-            public void onTimePassed(TimerHandler pTimerHandler) {
-
-                endTheGame();
-            }
-        }){
-            @Override
-            public void onUpdate(float pSecondsElapsed) {
-                if(!isPaused)
-                {
-                    super.onUpdate(pSecondsElapsed);
-                }
-            }
-
-        }
-
-        ;
-
-        generateBallTimer = new TimerHandler((float) generationDelay, true, new ITimerCallback() {
-            @Override
-            public void onTimePassed(TimerHandler pTimerHandler) {
-
-                generateBalls();
-            }
-
-
-
-        }
-
-
-        )
-        {
-            @Override
-            public void onUpdate(float pSecondsElapsed) {
-                if(!isPaused)
-                {
-                    super.onUpdate(pSecondsElapsed);
-                }
-            }
-
-        }
-
-        ;
-        timeCheckTimer = new TimerHandler((float) 1, true, new ITimerCallback() {
-            @Override
-            public void onTimePassed(TimerHandler pTimerHandler) {
-                time--;
-                if(time==0)
-                {
-                    endTheGame();
-                }
-                elapsedTimeDisplay.setText("Time:"+Integer.toString(time));
-            }
-        }){
-            @Override
-            public void onUpdate(float pSecondsElapsed) {
-                if(!isPaused)
-                {
-                    super.onUpdate(pSecondsElapsed);
-                }
-            }
-
-        }
-
-        ;
-        removePlusTenTimer = new TimerHandler((float) 0.5, true, new ITimerCallback() {
-            @Override
-            public void onTimePassed(TimerHandler pTimerHandler) {
-
-                mMainScene.detachChild(plus10);
-                mMainScene.unregisterUpdateHandler(pTimerHandler);
-            }
-        }){
-            @Override
-            public void onUpdate(float pSecondsElapsed) {
-                if(!isPaused)
-                {
-                    super.onUpdate(pSecondsElapsed);
-                }
-            }
-
-        }
-
-        ;
-        levelUpTimer=new TimerHandler(30, true, new ITimerCallback()
-        {
-            @Override
-            public void onTimePassed(TimerHandler pTimerHandler) {
-
-                Log.e("Level Increased","Increasing Level");
-                IncreaseSpeed();
-                UpdateFrequency();
-            }
-
-        }){
-            @Override
-            public void onUpdate(float pSecondsElapsed) {
-                if(!isPaused)
-                {
-                    super.onUpdate(pSecondsElapsed);
-                }
-            }
-
-        }
-
-        ;
-        menuScene=createMenu();
-        mMainScene.setChildScene(menuScene);
-        getEngine().registerUpdateHandler(generateBallTimer);
-        getEngine().registerUpdateHandler(levelUpTimer);
-        getEngine().registerUpdateHandler(endGameTimer);
-        getEngine().registerUpdateHandler(timeCheckTimer);
-        return this.mMainScene;
-
-		
+        initSceneSprites();
+        mMainScene=new Scene();
+        setBackground(backgroundSprite,thornsOnBackgroundSprite);
+        addMenuToScene();
+        toggleMusic(1);
+        loadGameInfoText();
+        initTimers();
+        registerTimers(getEngine());
+        return mMainScene;
 	}
 
     private void addMenuToScene() {
