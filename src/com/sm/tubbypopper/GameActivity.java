@@ -579,62 +579,39 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
                 blackCount++;
                 break;
             case 1:
-                Sprite s2 = new Sprite(posX, posY, appleTextureRegion, getVertexBufferObjectManager()) {
-
-
-                    @Override
-                    public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-                        Sprite sprite = this;
-                        final Sprite touched = sprite;
-                        if (pSceneTouchEvent.isActionDown() && !isPaused) {
-                            if (sprite.detachSelf() || mMainScene.detachChild(sprite)) {
-                                Log.e("Child", "Detatched");
-                                removeFruitAndUpdateScore(sprite);
-                            }
-                            mMainScene.detachChild(sprite);
-                        }
-                        return true;
-                    }
-
-
-                };
-                theBalls.add(s2);
-                registerSpriteAndAddMoveModifier(s2, ballChoice, s2.getX(), s2.getY());
+                initFruitSprite(ballChoice, posX, posY, appleTextureRegion);
                 redCount++;
                 break;
             case 2:
-                Sprite s3 = new Sprite(posX, posY, mangoTextureRegion, getVertexBufferObjectManager()) {
-
-                    @Override
-                    public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-
-                        if (pSceneTouchEvent.isActionDown() && !isPaused) {
-                            if (this.detachSelf() || mMainScene.detachChild(this)) {
-                                Log.e("Child", "Detatched");
-                                Score = Score + 10;
-                                String me = "";
-                                me = Integer.toString(Score);
-                                scoreTextDisplay.setText(scoreText + me);
-                                plus10 = new Sprite(this.getX(), this.getY(), plusTenTextureRegion, getVertexBufferObjectManager());
-                                mMainScene.attachChild(plus10);
-                                mMainScene.registerUpdateHandler(removePlusTenTimer);
-                                theBalls.remove(this);
-                                popSound.play();
-                            }
-
-                        }
-                        mMainScene.detachChild(this);
-
-                        return true;
-                    }
-                };
-                theBalls.add(s3);
-                registerSpriteAndAddMoveModifier(s3, ballChoice, s3.getX(), s3.getY());
+                initFruitSprite(ballChoice,posX,posY,mangoTextureRegion);
                 blueCount++;
                 break;
         }
 
 
+    }
+
+    private void initFruitSprite(int ballChoice, final int posX, final int posY, final TextureRegion appleTextureRegion1) {
+        Sprite s2 = new Sprite(posX, posY, appleTextureRegion1, getVertexBufferObjectManager()) {
+
+
+            @Override
+            public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
+                Sprite sprite = this;
+                if (pSceneTouchEvent.isActionDown() && !isPaused) {
+                    if (sprite.detachSelf() || mMainScene.detachChild(sprite)) {
+                        Log.e("Child", "Detatched");
+                        removeFruitAndUpdateScore(sprite);
+                    }
+                    mMainScene.detachChild(sprite);
+                }
+                return true;
+            }
+
+
+        };
+        theBalls.add(s2);
+        registerSpriteAndAddMoveModifier(s2, ballChoice, s2.getX(), s2.getY());
     }
 
     private void registerSpriteAndAddMoveModifier(Sprite sprite, int ballChoice, final float startX, final float startY) {
