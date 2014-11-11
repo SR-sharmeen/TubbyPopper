@@ -500,11 +500,6 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         startActivity(i);
     }
 
-    private void goodBallTouched(Sprite ball) {
-        Score += 10;
-        this.mMainScene.detachChild(ball);
-    }
-
     private void increaseSpeed() {
         if (speed != 0) {
             speed -= 10;
