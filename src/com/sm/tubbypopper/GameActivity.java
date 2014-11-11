@@ -31,6 +31,7 @@ import org.andengine.entity.text.TextOptions;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
+import org.andengine.opengl.texture.TextureManager;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -49,25 +50,25 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
 	static final int CAMERA_HEIGHT = 480; 
 	private Camera mCamera; 
 	private Scene mMainScene;
-	private BitmapTextureAtlas mBlueTextureAtlas; 
-	private BitmapTextureAtlas mBlackTextureAtlas; 
-	private BitmapTextureAtlas mRedTextureAtlas; 
-	private BitmapTextureAtlas mBackgroundTextureAtlas; 
-	private BitmapTextureAtlas mThornsTextureAtlas; 
-	private BitmapTextureAtlas mShowPlusTenTextureAtlas; 
-	private BitmapTextureAtlas mPlayTextureAtlas; 
-	private BitmapTextureAtlas mPauseTextureAtlas; 
-	private BitmapTextureAtlas mExplosionTextureAtlas; 
+	private BitmapTextureAtlas mangoTextureAtlas;
+	private BitmapTextureAtlas bombTextureAtlas;
+	private BitmapTextureAtlas appleTextureAtlas;
+	private BitmapTextureAtlas skyTextureAtlas;
+	private BitmapTextureAtlas thornsTextureAtlas;
+	private BitmapTextureAtlas plusTenTextureAtlas;
+	private BitmapTextureAtlas playTextureAtlas;
+	private BitmapTextureAtlas pauseTextureAtlas;
+	private BitmapTextureAtlas explosionTextureAtlas;
 
-	private TextureRegion BlueBall;
-	private TextureRegion BlackBall;
-	private TextureRegion RedBall;
-	private TextureRegion BackGround;
-	private TextureRegion Thorns;
-	private TextureRegion PlusTen;
-	private TextureRegion Play;
-	private TextureRegion Pause;
-	private TextureRegion Explode;
+	private TextureRegion mangoTextureRegion;
+	private TextureRegion bombTextureRegion;
+	private TextureRegion appleTextureRegion;
+	private TextureRegion skyTextureRegion;
+	private TextureRegion thornsTextureRegion;
+	private TextureRegion plusTenTextureRegion;
+	private TextureRegion playTextureRegion;
+	private TextureRegion pauseTextureRegion;
+	private TextureRegion explosionTextureRegion;
 	private TimerHandler generateBallTimer;
 	private TimerHandler levelUpTimer;
 	private TimerHandler removePlusTenTimer;
@@ -100,7 +101,7 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
 	ArrayList<Sprite> theBalls;
     private Sprite thornsOnBackgroundSprite;
     private Sprite backgroundSprite;
-	private Font mFont;
+	private Font font;
 
 	@Override
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY)
@@ -126,14 +127,14 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
     private void resumeGame(MenuScene pMenuScene) {
         isPaused =false;
         toggleMusic(1);
-        playPauseButtonSet(pMenuScene,Pause);
+        playPauseButtonSet(pMenuScene, pauseTextureRegion);
         ignoreSceneUpdates(false);
     }
 
     private void pauseGame(MenuScene pMenuScene) {
         isPaused =true;
         toggleMusic(0);
-        playPauseButtonSet(pMenuScene, Play);
+        playPauseButtonSet(pMenuScene, playTextureRegion);
         ignoreSceneUpdates(true);
     }
 
@@ -235,52 +236,58 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
     }
 
     private void createTextureRegions() {
-        mBlackTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mBlueTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mRedTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mBackgroundTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 4096, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mThornsTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mShowPlusTenTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mPlayTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mPauseTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mExplosionTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        createTextureAtlas();
 
-        BlackBall= BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                (this.mBlackTextureAtlas, this, "bomb.png", startX, startY);
-        BlueBall= BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                 (this.mBlueTextureAtlas, this, "mmango.png", startX, startY);
-        RedBall= BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                 (this.mRedTextureAtlas, this, "apple.png", startX, startY);
-        BackGround=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                 (this.mBackgroundTextureAtlas, this, "sky.png", startX, startY);
-        Thorns=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                 (this.mThornsTextureAtlas, this, "thorns.png", startX, startY);
-        PlusTen=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                 (this.mShowPlusTenTextureAtlas, this, "plus10.png", startX, startY);
-        Play=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                 (this.mPlayTextureAtlas, this, "play.png", startX, startY);
-        Pause=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                 (this.mPauseTextureAtlas, this, "pause.png", startX, startY);
-        Explode=BitmapTextureAtlasTextureRegionFactory.createFromAsset
-                 (this.mExplosionTextureAtlas, this, "explosion.png", startX, startY);
+        bombTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset
+                (bombTextureAtlas, this, "bomb.png", startX, startY);
+        mangoTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset
+                 (mangoTextureAtlas, this, "mmango.png", startX, startY);
+        appleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset
+                 (appleTextureAtlas, this, "apple.png", startX, startY);
+        skyTextureRegion =BitmapTextureAtlasTextureRegionFactory.createFromAsset
+                 (skyTextureAtlas, this, "sky.png", startX, startY);
+        thornsTextureRegion =BitmapTextureAtlasTextureRegionFactory.createFromAsset
+                 (thornsTextureAtlas, this, "thorns.png", startX, startY);
+        plusTenTextureRegion =BitmapTextureAtlasTextureRegionFactory.createFromAsset
+                 (plusTenTextureAtlas, this, "plus10.png", startX, startY);
+        playTextureRegion =BitmapTextureAtlasTextureRegionFactory.createFromAsset
+                 (playTextureAtlas, this, "play.png", startX, startY);
+        pauseTextureRegion =BitmapTextureAtlasTextureRegionFactory.createFromAsset
+                 (pauseTextureAtlas, this, "pause.png", startX, startY);
+        explosionTextureRegion =BitmapTextureAtlasTextureRegionFactory.createFromAsset
+                 (explosionTextureAtlas, this, "explosion.png", startX, startY);
 
-        this.mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
 
 
     }
 
-    private void loadTextureRegions() {
-        this.mFont.load();
+    private void createTextureAtlas() {
+        TextureManager textureManager = this.getTextureManager();
+        bombTextureAtlas = new BitmapTextureAtlas(textureManager, 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        mangoTextureAtlas = new BitmapTextureAtlas(textureManager, 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        appleTextureAtlas = new BitmapTextureAtlas(textureManager, 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        skyTextureAtlas = new BitmapTextureAtlas(textureManager, 4096, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        thornsTextureAtlas = new BitmapTextureAtlas(textureManager, 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        plusTenTextureAtlas = new BitmapTextureAtlas(textureManager, 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        playTextureAtlas = new BitmapTextureAtlas(textureManager, 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        pauseTextureAtlas = new BitmapTextureAtlas(textureManager, 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        explosionTextureAtlas = new BitmapTextureAtlas(textureManager, 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        font = FontFactory.create(this.getFontManager(),textureManager, 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
 
-        mBlueTextureAtlas.load();
-        mBlackTextureAtlas.load();
-        mRedTextureAtlas.load();
-        mBackgroundTextureAtlas.load();
-        mThornsTextureAtlas.load();
-        mShowPlusTenTextureAtlas.load();
-        mPlayTextureAtlas.load();
-        mPauseTextureAtlas.load();
-        mExplosionTextureAtlas.load();
+    }
+
+    private void loadTextureRegions() {
+        this.font.load();
+
+        mangoTextureAtlas.load();
+        bombTextureAtlas.load();
+        appleTextureAtlas.load();
+        skyTextureAtlas.load();
+        thornsTextureAtlas.load();
+        plusTenTextureAtlas.load();
+        playTextureAtlas.load();
+        pauseTextureAtlas.load();
+        explosionTextureAtlas.load();
     }
 
     private void loadGameMusic() {
@@ -305,7 +312,7 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
 	}
 
     private void addPauseOptionToMenu() {
-        final IMenuItem pauseMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(0, Pause, getVertexBufferObjectManager()), 2, 1);
+        final IMenuItem pauseMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(0, pauseTextureRegion, getVertexBufferObjectManager()), 2, 1);
         menuScene.addMenuItem(pauseMenuItem);
         menuScene.buildAnimations();
     }
@@ -473,15 +480,15 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
 
     private void initSceneSprites() {
         theBalls=new ArrayList<Sprite>();
-        backgroundSprite= new Sprite(0,0, BackGround, getVertexBufferObjectManager());
-        thornsOnBackgroundSprite = new Sprite(0,CAMERA_HEIGHT-118, Thorns, getVertexBufferObjectManager());
+        backgroundSprite= new Sprite(0,0, skyTextureRegion, getVertexBufferObjectManager());
+        thornsOnBackgroundSprite = new Sprite(0,CAMERA_HEIGHT-118, thornsTextureRegion, getVertexBufferObjectManager());
     }
 
     private void loadGameInfoText() {
         String s="this is where the score will be";
-        scoreTextDisplay = new Text(0, 0, this.mFont, s, new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
-        livesTextDisplay = new Text(0, 30, this.mFont, s, new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
-        elapsedTimeDisplay = new Text(CAMERA_WIDTH-150, 0, this.mFont, s, new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
+        scoreTextDisplay = new Text(0, 0, this.font, s, new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
+        livesTextDisplay = new Text(0, 30, this.font, s, new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
+        elapsedTimeDisplay = new Text(CAMERA_WIDTH-150, 0, this.font, s, new TextOptions(HorizontalAlign.CENTER), this.getVertexBufferObjectManager());
         scoreTextDisplay.setColor(Color.RED);
         scoreTextDisplay.setZIndex(1000);
         livesTextDisplay.setZIndex(1000);
@@ -584,14 +591,14 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
 			{
 				case 0:
 					
-					Sprite s=new Sprite(posX,posY, BlackBall, getVertexBufferObjectManager()){
+					Sprite s=new Sprite(posX,posY, bombTextureRegion, getVertexBufferObjectManager()){
 					
 				      @Override
 					      public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
 				      		{
 				    	  		if(!isPaused)
 				    	  	{
-				    	  			Sprite ex= new Sprite(this.getX(),this.getY(), Explode, getVertexBufferObjectManager());
+				    	  			Sprite ex= new Sprite(this.getX(),this.getY(), explosionTextureRegion, getVertexBufferObjectManager());
 				    	  			this.detachSelf();
 				    	  			mMainScene.attachChild(ex);
 				    	  		boom.play();
@@ -609,7 +616,7 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
 					blackCount++;
 					break;
 				case 1:
-					Sprite s2= new Sprite(posX,posY, RedBall, getVertexBufferObjectManager()){
+					Sprite s2= new Sprite(posX,posY, appleTextureRegion, getVertexBufferObjectManager()){
 						
 				
 			
@@ -627,7 +634,7 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
 			    	  			String me="";
 			    	  			me=Integer.toString(Score);
 			    	  			scoreTextDisplay.setText(scoreText+me);
-			    	  			plus10= new Sprite(this.getX(),this.getY(),PlusTen, getVertexBufferObjectManager());
+			    	  			plus10= new Sprite(this.getX(),this.getY(), plusTenTextureRegion, getVertexBufferObjectManager());
 			    	  			mMainScene.attachChild(plus10);
 			    	  			mMainScene.registerUpdateHandler(removePlusTenTimer);
 			    	  			popSound.play();
@@ -647,7 +654,7 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
 					redCount++;
 					break;
 				case 2:
-					Sprite s3=new Sprite(posX,posY, BlueBall, getVertexBufferObjectManager()){
+					Sprite s3=new Sprite(posX,posY, mangoTextureRegion, getVertexBufferObjectManager()){
 					
 				      @Override
 					      public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY)
@@ -663,7 +670,7 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
 			    	  			String me="";
 			    	  			me=Integer.toString(Score);
 			    	  			scoreTextDisplay.setText(scoreText+me);
-			    	  			 plus10= new Sprite(this.getX(),this.getY(),PlusTen, getVertexBufferObjectManager());
+			    	  			 plus10= new Sprite(this.getX(),this.getY(), plusTenTextureRegion, getVertexBufferObjectManager());
 			    	  			mMainScene.attachChild(plus10);
 			    	  			mMainScene.registerUpdateHandler(removePlusTenTimer);
 			    	  			theBalls.remove(this);
