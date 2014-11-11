@@ -77,9 +77,9 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
 
     private MenuScene menuScene;
     double generationDelay = 2;
-    int blackCount = 0;
-    int redCount = 0;
-    int blueCount = 0;
+    int bombCount = 0;
+    int appleCount = 0;
+    int mangoCount = 0;
     int startX = 2;
     int startY = 2;
     int speed = 40;
@@ -98,7 +98,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     boolean firstHalf = true;
     boolean secondHalf = false;
     boolean isPaused = false;
-    ArrayList<Sprite> theBalls;
+    ArrayList<Sprite> thePoppables;
     private Sprite thornsOnBackgroundSprite;
     private Sprite backgroundSprite;
     private Font font;
@@ -426,7 +426,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
 
-                generateBalls();
+                generatePoppables();
             }
 
 
@@ -471,7 +471,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     }
 
     private void initSceneSprites() {
-        theBalls = new ArrayList<Sprite>();
+        thePoppables = new ArrayList<Sprite>();
         backgroundSprite = new Sprite(0, 0, skyTextureRegion, getVertexBufferObjectManager());
         thornsOnBackgroundSprite = new Sprite(0, CAMERA_HEIGHT - 118, thornsTextureRegion, getVertexBufferObjectManager());
     }
@@ -518,22 +518,11 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         }
     }
 
-    private void UpdateFrequency() {
-        if (firstHalf == true) {
-            firstHalf = false;
-            secondHalf = true;
-            redCount = blueCount = blackCount = 0;
-        } else if (secondHalf = true) {
-            secondHalf = false;
-            redCount = blueCount = blackCount = 0;
-        }
-    }
-
-    private void generateBalls() {
+    private void generatePoppables() {
         Random chooseBall = new Random();
         Random chooseLocation = new Random();
         Random indexChanger = new Random();
-        int ballChoice = chooseBall.nextInt(3);
+        int poppableChoice = chooseBall.nextInt(3);
         int posX = startX;
         int posY = startY;
         int screenChunk = CAMERA_WIDTH / 4;
@@ -553,7 +542,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
                 break;
         }
 
-        switch (ballChoice) {
+        switch (poppableChoice) {
             case 0:
 
                 Sprite s = new Sprite(posX, posY, bombTextureRegion, getVertexBufferObjectManager()) {
@@ -567,24 +556,24 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
                             boom.play();
                             life = 0;
                             endTheGame();
-                            theBalls.remove(this);
+                            thePoppables.remove(this);
                         }
                         return true;
 
                     }
                 };
 
-                theBalls.add(s);
-                registerSpriteAndAddMoveModifier(s, ballChoice, s.getX(), s.getY());
-                blackCount++;
+                thePoppables.add(s);
+                registerSpriteAndAddMoveModifier(s, poppableChoice, s.getX(), s.getY());
+                bombCount++;
                 break;
             case 1:
-                initFruitSprite(ballChoice, posX, posY, appleTextureRegion);
-                redCount++;
+                initFruitSprite(poppableChoice, posX, posY, appleTextureRegion);
+                appleCount++;
                 break;
             case 2:
-                initFruitSprite(ballChoice,posX,posY,mangoTextureRegion);
-                blueCount++;
+                initFruitSprite(poppableChoice,posX,posY,mangoTextureRegion);
+                mangoCount++;
                 break;
         }
 
@@ -610,7 +599,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
 
 
         };
-        theBalls.add(s2);
+        thePoppables.add(s2);
         registerSpriteAndAddMoveModifier(s2, ballChoice, s2.getX(), s2.getY());
     }
 
@@ -641,11 +630,11 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         public void onUpdate(float pSecondsElapsed) {
 
             //	elapsedTimeDisplay.setText("Time:"+Float.toString(pSecondsElapsed));
-            for (int i = 0; i < theBalls.size(); i++) {
-                if (thornsOnBackgroundSprite.collidesWith(theBalls.get(i))) {
+            for (int i = 0; i < thePoppables.size(); i++) {
+                if (thornsOnBackgroundSprite.collidesWith(thePoppables.get(i))) {
 
 
-                    if (theBalls.get(i).getTag() != 0) {
+                    if (thePoppables.get(i).getTag() != 0) {
                         dyingBeep.play();
 
                         life--;
@@ -657,8 +646,8 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
 
                         Log.e("Update", "A good ball died");
                     }
-                    mMainScene.detachChild(theBalls.get(i));
-                    theBalls.remove(i);
+                    mMainScene.detachChild(thePoppables.get(i));
+                    thePoppables.remove(i);
                 }
             }
 
@@ -680,6 +669,6 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         mMainScene.attachChild(plus10);
         mMainScene.registerUpdateHandler(removePlusTenTimer);
         popSound.play();
-        theBalls.remove(sprite);
+        thePoppables.remove(sprite);
     }
 }
