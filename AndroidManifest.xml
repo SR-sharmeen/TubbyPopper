@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.myfirstgame"
+    package="com.sm.tubbypopper"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -14,18 +14,18 @@
         android:label="@string/app_name"
         android:theme="@style/CustomTheme1" >
         <activity
-            android:name="com.example.myfirstgame.MainActivity"
+            android:name=".GameActivity"
             android:label="@string/app_name" >
            
         </activity>
         <activity
-            android:name="com.example.myfirstgame.About"
+            android:name="com.sm.tubbypopper.About"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Dialog"
            >
         </activity>
          <activity
-            android:name="com.example.myfirstgame.GameStart"
+            android:name="com.sm.tubbypopper.GameStart"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.myfirstgame.GameOver"
+            android:name="com.sm.tubbypopper.GameOver"
             android:label="@string/app_name"
             android:background="@drawable/overbg" >
            

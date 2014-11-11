@@ -4,5 +4,18 @@
     <string name="app_name">Pop</string>
     <string name="action_settings">About</string>
     <string name="hello_world">Hello world!</string>
+    <string name="bomb_asset">images/bomb.png</string>
+    <string name="mango_asset">images/mmango.png</string>
+    <string name="apple_asset">images/apple.png</string>
+    <string name="sky_asset">images/sky.png</string>
+    <string name="thorns_asset">images/thorns.png</string>
+    <string name="plus10_asset">images/plus10.png</string>
+    <string name="play_asset">images/play.png</string>
+    <string name="pause_asset">images/pause.png</string>
+    <string name="explosion_asset">images/explosion.png</string>
+    <string name="pop_sound_asset">sounds/pop.mp3</string>
+    <string name="dyingbeep_asset">sounds/dyingbeep.mp3</string>
+    <string name="boom_sound_asset">sounds/boom.mp3</string>
+    <string name="main_game_music_asset">sounds/music.mp3</string>
 
 </resources>
