@@ -209,34 +209,8 @@ public class GameActivity extends  SimpleBaseGameActivity implements IOnMenuItem
         Log.e("Creating:", "Resources");
 
         Log.e("Creating:", "Sounds");
-        try {
-            popSound= SoundFactory.createSoundFromAsset(getSoundManager(), this, "pop.mp3");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            dyingBeep= SoundFactory.createSoundFromAsset(getSoundManager(), this, "dyingbeep.mp3");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            boom= SoundFactory.createSoundFromAsset(getSoundManager(), this, "boom.mp3");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            bgMusic=MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this,"music.mp3");
-            bgMusic.setLooping(true);
-            bgMusic.setVolume(0.1f);
-        } catch (IllegalStateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
+        loadGameSounds();
+        loadGameMusic();
         Log.e("Creating", "Texture Regions");
         mBlackTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         mBlueTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
