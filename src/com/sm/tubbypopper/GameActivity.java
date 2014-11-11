@@ -74,7 +74,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     private TextureRegion playTextureRegion;
     private TextureRegion pauseTextureRegion;
     private TextureRegion explosionTextureRegion;
-    private TimerHandler generateBallTimer;
+    private TimerHandler generatePoppableTimer;
     private TimerHandler levelUpTimer;
     private TimerHandler removePlusTenTimer;
     private TimerHandler endGameTimer;
@@ -328,7 +328,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     }
 
     private void registerTimers(Engine engine) {
-        engine.registerUpdateHandler(generateBallTimer);
+        engine.registerUpdateHandler(generatePoppableTimer);
         engine.registerUpdateHandler(levelUpTimer);
         engine.registerUpdateHandler(endGameTimer);
         engine.registerUpdateHandler(timeCheckTimer);
@@ -404,7 +404,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     }
 
     private void initPoppableGenerator() {
-        generateBallTimer = new TimerHandler((float) generationDelay, true, new ITimerCallback() {
+        generatePoppableTimer = new TimerHandler((float) generationDelay, true, new ITimerCallback() {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
 
@@ -515,7 +515,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         int posX = startX;
         int posY = startY;
         int screenChunk = CAMERA_WIDTH / 4;
-        int salt = indexChanger.nextInt((screenChunk - 20) - 5) + 5;
+        int salt = indexChanger.nextInt((screenChunk - 20) - 5) ;
         switch (chooseLocation.nextInt(4)) {
             case 0:
                 posX = posX + salt;
