@@ -36,6 +36,7 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.TextureRegion;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.HorizontalAlign;
 import org.andengine.util.color.Color;
@@ -48,6 +49,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
 
     static final int CAMERA_WIDTH = 800;
     static final int CAMERA_HEIGHT = 480;
+    private  VertexBufferObjectManager vertexBufferObjectManager;
     private Camera mCamera;
     private Scene mMainScene;
     private BitmapTextureAtlas mangoTextureAtlas;
@@ -95,8 +97,6 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     Music bgMusic;
     Sound boom;
     int time = 180;
-    boolean firstHalf = true;
-    boolean secondHalf = false;
     boolean isPaused = false;
     ArrayList<Sprite> thePoppables;
     private Sprite thornsOnBackgroundSprite;
@@ -155,7 +155,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         IMenuItem pMenuItem;
         pMenuScene.reset();
         pMenuScene.clearMenuItems();
-        pMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(0, textureRegion, getVertexBufferObjectManager()), 2, 1);
+        pMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(0, textureRegion, vertexBufferObjectManager), 2, 1);
         pMenuScene.addMenuItem(pMenuItem);
         pMenuScene.buildAnimations();
     }
@@ -216,6 +216,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         Log.e("Creating:", "Resources");
 
         Log.e("Creating:", "Sounds");
+        vertexBufferObjectManager=getVertexBufferObjectManager();
         loadGameSounds();
         loadGameMusic();
         createTextureRegions();
@@ -316,7 +317,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     }
 
     private void addPauseOptionToMenu() {
-        final IMenuItem pauseMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(0, pauseTextureRegion, getVertexBufferObjectManager()), 2, 1);
+        final IMenuItem pauseMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(0, pauseTextureRegion, vertexBufferObjectManager), 2, 1);
         menuScene.addMenuItem(pauseMenuItem);
         menuScene.buildAnimations();
     }
@@ -325,11 +326,9 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     protected Scene onCreateScene() {
         initSceneSprites();
         mMainScene = new Scene();
-        setBackground(backgroundSprite, thornsOnBackgroundSprite);
-        addMenuToScene();
-        toggleMusic(1);
-        loadGameInfoText();
+        initScene();
         initTimers();
+        addMenuToScene();
         registerTimers(getEngine());
         return mMainScene;
     }
@@ -349,7 +348,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
 
     private void initTimers() {
         initEndGameTimer();
-        initBallGenerator();
+        initPoppableGenerator();
         initElapsedTimeTimer();
         initRemovePlus10NotificationTimer();
         initLevelUpTimer();
@@ -421,7 +420,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         ;
     }
 
-    private void initBallGenerator() {
+    private void initPoppableGenerator() {
         generateBallTimer = new TimerHandler((float) generationDelay, true, new ITimerCallback() {
             @Override
             public void onTimePassed(TimerHandler pTimerHandler) {
@@ -472,15 +471,15 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
 
     private void initSceneSprites() {
         thePoppables = new ArrayList<Sprite>();
-        backgroundSprite = new Sprite(0, 0, skyTextureRegion, getVertexBufferObjectManager());
-        thornsOnBackgroundSprite = new Sprite(0, CAMERA_HEIGHT - 118, thornsTextureRegion, getVertexBufferObjectManager());
+        backgroundSprite = new Sprite(0, 0, skyTextureRegion, vertexBufferObjectManager);
+        thornsOnBackgroundSprite = new Sprite(0, CAMERA_HEIGHT - 118, thornsTextureRegion, vertexBufferObjectManager);
     }
 
     private void loadGameInfoText() {
         String s = "this is where the score will be";
         loadScoreText(s);
         loadLivesText(s);
-        elapsedTimeDisplay = new Text(CAMERA_WIDTH - 150, 0, this.font, s, new TextOptions(HorizontalAlign.CENTER), getVertexBufferObjectManager());
+        elapsedTimeDisplay = new Text(CAMERA_WIDTH - 150, 0, this.font, s, new TextOptions(HorizontalAlign.CENTER), vertexBufferObjectManager);
         attachTextToScene();
 
     }
@@ -492,13 +491,13 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     }
 
     private void loadLivesText(String s) {
-        livesTextDisplay = new Text(0, 30, this.font, s, new TextOptions(HorizontalAlign.CENTER), getVertexBufferObjectManager());
+        livesTextDisplay = new Text(0, 30, this.font, s, new TextOptions(HorizontalAlign.CENTER), vertexBufferObjectManager);
         livesTextDisplay.setText("Lives:" + life);
         livesTextDisplay.setZIndex(1000);
     }
 
     private void loadScoreText(String s) {
-        scoreTextDisplay = new Text(0, 0, this.font, s, new TextOptions(HorizontalAlign.CENTER), getVertexBufferObjectManager());
+        scoreTextDisplay = new Text(0, 0, this.font, s, new TextOptions(HorizontalAlign.CENTER), vertexBufferObjectManager);
         scoreTextDisplay.setColor(Color.RED);
         scoreTextDisplay.setZIndex(1000);
         scoreText = "Score:";
@@ -558,7 +557,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         switch (poppableChoice) {
             case 0:
 
-                Sprite s = new Sprite(posX, posY, bombTextureRegion, getVertexBufferObjectManager()) {
+                Sprite s = new Sprite(posX, posY, bombTextureRegion, vertexBufferObjectManager) {
 
                     @Override
                     public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
@@ -594,7 +593,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     }
 
     private void initFruitSprite(int ballChoice, final int posX, final int posY, final TextureRegion appleTextureRegion1) {
-        Sprite s2 = new Sprite(posX, posY, appleTextureRegion1, getVertexBufferObjectManager()) {
+        Sprite s2 = new Sprite(posX, posY, appleTextureRegion1, vertexBufferObjectManager) {
 
 
             @Override
@@ -678,7 +677,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
         String me = "";
         me = Integer.toString(Score);
         scoreTextDisplay.setText(scoreText + me);
-        plus10 = new Sprite(sprite.getX(), sprite.getY(), plusTenTextureRegion, getVertexBufferObjectManager());
+        plus10 = new Sprite(sprite.getX(), sprite.getY(), plusTenTextureRegion, vertexBufferObjectManager);
         mMainScene.attachChild(plus10);
         mMainScene.registerUpdateHandler(removePlusTenTimer);
         popSound.play();
