@@ -13,5 +13,9 @@
     <string name="play_asset">images/play.png</string>
     <string name="pause_asset">images/pause.png</string>
     <string name="explosion_asset">images/explosion.png</string>
+    <string name="pop_sound_asset">sounds/pop.mp3</string>
+    <string name="dyingbeep_asset">sounds/dyingbeep.mp3</string>
+    <string name="boom_sound_asset">sounds/boom.mp3</string>
+    <string name="main_game_music_asset">sounds/music.mp3</string>
 
 </resources>

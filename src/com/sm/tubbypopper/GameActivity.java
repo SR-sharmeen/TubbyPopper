@@ -248,24 +248,24 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
 
     private void loadGameSounds() {
         try {
-            popSound = SoundFactory.createSoundFromAsset(getSoundManager(), this, "pop.mp3");
+            popSound = SoundFactory.createSoundFromAsset(getSoundManager(), this, getString(R.string.pop_sound_asset));
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            dyingBeep = SoundFactory.createSoundFromAsset(getSoundManager(), this, "dyingbeep.mp3");
+            dyingBeep = SoundFactory.createSoundFromAsset(getSoundManager(), this, getString(R.string.dyingbeep_asset));
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            boom = SoundFactory.createSoundFromAsset(getSoundManager(), this, "boom.mp3");
+            boom = SoundFactory.createSoundFromAsset(getSoundManager(), this, getString(R.string.boom_sound_asset));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     private void loadGameMusic() {
         try {
-            bgMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, "music.mp3");
+            bgMusic = MusicFactory.createMusicFromAsset(this.mEngine.getMusicManager(), this, getString(R.string.main_game_music_asset));
         } catch (IOException e) {
             Log.e("loadGameMusic:", "Could not load game music");
         }
