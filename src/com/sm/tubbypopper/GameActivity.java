@@ -81,7 +81,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnMenuItemC
     private TimerHandler timeCheckTimer;
 
     private MenuScene menuScene;
-    double generationDelay = 2;
+    double generationDelay = 1;
     int bombCount = 0;
     int appleCount = 0;
     int mangoCount = 0;
